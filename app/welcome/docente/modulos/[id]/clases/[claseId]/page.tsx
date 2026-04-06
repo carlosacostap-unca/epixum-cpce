@@ -144,10 +144,8 @@ export default function EditarClasePage() {
         recFormData.append("tipo", recurso.tipo);
         recFormData.append("titulo", recurso.titulo);
         
-        if (recurso.tipo === "enlace" && recurso.enlace) {
+        if (recurso.enlace) {
           recFormData.append("enlace", recurso.enlace);
-        } else if (recurso.tipo === "archivo" && recurso.archivo) {
-          recFormData.append("archivo", recurso.archivo);
         }
 
         if (recurso.isNew) {
@@ -298,65 +296,35 @@ export default function EditarClasePage() {
                           type="text"
                           required
                           className="input-well"
-                          placeholder="Ej. Presentación PDF"
+                          placeholder={recurso.tipo === "enlace" ? "Ej. Presentación PDF" : "Ej. Documento PDF"}
                           value={recurso.titulo}
                           onChange={(e) => actualizarRecurso(recurso.id, "titulo", e.target.value)}
                         />
                       </div>
 
-                      {recurso.tipo === "enlace" ? (
-                        <div className="space-y-2">
-                          <label className="text-label-sm">URL del enlace</label>
-                          <input
-                            type="url"
-                            required
-                            className="input-well"
-                            placeholder="https://..."
-                            value={recurso.enlace}
-                            onChange={(e) => actualizarRecurso(recurso.id, "enlace", e.target.value)}
-                          />
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <label className="text-label-sm">Archivo</label>
-                          <input
-                            type="file"
-                            className="hidden"
-                            ref={(el) => {
-                              fileInputRefs.current[recurso.id] = el;
-                            }}
-                            onChange={(e) => {
-                              if (e.target.files && e.target.files[0]) {
-                                actualizarRecurso(recurso.id, "archivo", e.target.files[0]);
-                              }
-                            }}
-                          />
-                          <div className="flex flex-col gap-2">
-                            <div className="flex items-center gap-3">
-                              <button
-                                type="button"
-                                onClick={() => fileInputRefs.current[recurso.id]?.click()}
-                                className="bg-surface-container border border-outline-variant/30 py-3 px-4 rounded-xl text-label-sm hover:bg-surface-container-high transition-colors"
-                              >
-                                {recurso.archivo || !recurso.archivoExistenteNombre ? "Seleccionar Archivo" : "Cambiar Archivo"}
-                              </button>
-                              <span className="text-body-sm text-on-surface-variant truncate max-w-[200px]">
-                                {recurso.archivo ? recurso.archivo.name : (recurso.archivoExistenteNombre || "Ningún archivo seleccionado")}
-                              </span>
-                            </div>
-                            {!recurso.archivo && recurso.archivoExistenteUrl && (
-                              <a 
-                                href={recurso.archivoExistenteUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="text-body-sm text-primary hover:underline"
-                              >
-                                Ver archivo actual
-                              </a>
-                            )}
+                      <div className="space-y-2">
+                        <label className="text-label-sm">URL del {recurso.tipo}</label>
+                        <input
+                          type="url"
+                          required
+                          className="input-well"
+                          placeholder="https://..."
+                          value={recurso.enlace}
+                          onChange={(e) => actualizarRecurso(recurso.id, "enlace", e.target.value)}
+                        />
+                        {recurso.archivoExistenteUrl && !recurso.enlace && (
+                          <div className="mt-2">
+                            <a 
+                              href={recurso.archivoExistenteUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-body-sm text-primary hover:underline"
+                            >
+                              Ver archivo legado
+                            </a>
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}

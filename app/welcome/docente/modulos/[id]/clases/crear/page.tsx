@@ -88,10 +88,8 @@ export default function CrearClasePage() {
         recFormData.append("tipo", recurso.tipo);
         recFormData.append("titulo", recurso.titulo);
         
-        if (recurso.tipo === "enlace" && recurso.enlace) {
+        if (recurso.enlace) {
           recFormData.append("enlace", recurso.enlace);
-        } else if (recurso.tipo === "archivo" && recurso.archivo) {
-          recFormData.append("archivo", recurso.archivo);
         }
 
         return pb.collection("recursos").create(recFormData);
@@ -234,53 +232,23 @@ export default function CrearClasePage() {
                           type="text"
                           required
                           className="input-well"
-                          placeholder="Ej. Presentación PDF"
+                          placeholder={recurso.tipo === "enlace" ? "Ej. Presentación PDF" : "Ej. Documento PDF"}
                           value={recurso.titulo}
                           onChange={(e) => actualizarRecurso(recurso.id, "titulo", e.target.value)}
                         />
                       </div>
 
-                      {recurso.tipo === "enlace" ? (
-                        <div className="space-y-2">
-                          <label className="text-label-sm">URL del enlace</label>
-                          <input
-                            type="url"
-                            required
-                            className="input-well"
-                            placeholder="https://..."
-                            value={recurso.enlace}
-                            onChange={(e) => actualizarRecurso(recurso.id, "enlace", e.target.value)}
-                          />
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <label className="text-label-sm">Archivo</label>
-                          <input
-                            type="file"
-                            className="hidden"
-                            ref={(el) => {
-                              fileInputRefs.current[recurso.id] = el;
-                            }}
-                            onChange={(e) => {
-                              if (e.target.files && e.target.files[0]) {
-                                actualizarRecurso(recurso.id, "archivo", e.target.files[0]);
-                              }
-                            }}
-                          />
-                          <div className="flex items-center gap-3">
-                            <button
-                              type="button"
-                              onClick={() => fileInputRefs.current[recurso.id]?.click()}
-                              className="bg-surface-container border border-outline-variant/30 py-3 px-4 rounded-xl text-label-sm hover:bg-surface-container-high transition-colors"
-                            >
-                              Seleccionar Archivo
-                            </button>
-                            <span className="text-body-sm text-on-surface-variant truncate max-w-[200px]">
-                              {recurso.archivo ? recurso.archivo.name : "Ningún archivo seleccionado"}
-                            </span>
-                          </div>
-                        </div>
-                      )}
+                      <div className="space-y-2">
+                        <label className="text-label-sm">URL del {recurso.tipo}</label>
+                        <input
+                          type="url"
+                          required
+                          className="input-well"
+                          placeholder="https://..."
+                          value={recurso.enlace}
+                          onChange={(e) => actualizarRecurso(recurso.id, "enlace", e.target.value)}
+                        />
+                      </div>
                     </div>
                   </div>
                 ))}

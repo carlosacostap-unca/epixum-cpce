@@ -119,7 +119,7 @@ export default function EstudianteModuloPage() {
   };
 
   const renderArchivos = (recursos: Recurso[] = []) => {
-    const archivos = recursos.filter((r) => r.tipo === "archivo" && r.archivo);
+    const archivos = recursos.filter((r) => r.tipo === "archivo");
     if (archivos.length === 0) return null;
 
     return (
@@ -131,7 +131,7 @@ export default function EstudianteModuloPage() {
           {archivos.map((recurso) => (
             <li key={recurso.id}>
               <a 
-                href={pb.files.getURL(recurso as any, recurso.archivo)} 
+                href={recurso.enlace || (recurso.archivo ? pb.files.getURL(recurso as any, recurso.archivo) : "#")} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 group"
@@ -144,7 +144,7 @@ export default function EstudianteModuloPage() {
                     {recurso.titulo}
                   </span>
                   <span className="text-body-sm text-on-surface-variant truncate">
-                    {recurso.archivo}
+                    {recurso.enlace || recurso.archivo || "Enlace no disponible"}
                   </span>
                 </div>
               </a>
